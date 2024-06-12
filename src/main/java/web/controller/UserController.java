@@ -11,7 +11,6 @@ import web.service.UserService;
 
 @Controller
 public class UserController {
-
     private UserService userService;
 
     public UserController(UserService userService) {
@@ -19,13 +18,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/")
-    public String getUsers(Model model) {
+    public String showAllUsers(Model model) {
         model.addAttribute("listUsers", userService.getUsers());
         return "index";
     }
 
     @GetMapping(value = "/add")
-    public String addUser(Model model) {
+    public String showAddUserForm(Model model) {
         User user = new User();
         model.addAttribute("user", user);
         return "addUser";
@@ -37,14 +36,8 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/delete")
-    public String deleteUser(@RequestParam("id") Long id) {
-        userService.deleteUser(id);
-        return "redirect:/";
-    }
-
     @GetMapping(value = "/edit")
-    public String editUser(@RequestParam(value = "id") long id, Model model) {
+    public String showEditUserForm(Model model, @RequestParam("id") long id) {
         model.addAttribute("user", userService.getUserById(id));
         return "editUser";
     }
@@ -52,6 +45,12 @@ public class UserController {
     @PostMapping(value = "/edit")
     public String editUser(@ModelAttribute("user") User user) {
         userService.editUser(user);
+        return "redirect:/";
+    }
+
+    @GetMapping("users/delete")
+    public String deleteUserById(@RequestParam("id") Long id) {
+        userService.deleteUser(id);
         return "redirect:/";
     }
 }
